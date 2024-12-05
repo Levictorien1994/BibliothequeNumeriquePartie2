@@ -18,7 +18,7 @@ router.get('/:id', authenticateToken, authorizeRole(['SuperAdmin']), getUtilisat
 router.put('/:id',authenticateToken, authorizeRole(['SuperAdmin']),  updateUtilisateur); // Mettre à jour un utilisateur
 router.put('/:id', authenticateToken,authorizeRole(['SuperAdmin']),  updateUtilisateur); // Mettre à jour un utilisateur
 router.delete('/:id',authenticateToken, authorizeRole(['SuperAdmin']), deleteUtilisateur); // Supprimer un utilisateur
-router.post('/',authenticateToken, authorizeRole(['SuperAdmin']),  validateUtilisateur, createUtilisateur);
+router.post('/',  validateUtilisateur, createUtilisateur);
 router.post('/login', validateLoginUtilisateur, loginUtilisateur);
 
 export default router;

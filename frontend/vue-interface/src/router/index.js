@@ -1,23 +1,23 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import Livres from '../views/Livres.vue';
+import Login from '../views/Login.vue';
+const routes = [
+  { path: '/livres', component: Livres, meta: { requiresAuth: true } },
+  { path: '/login', name: 'Login', component: Login },
+];
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: HomeView,
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
-    },
-  ],
-})
+  history: createWebHistory(),
+  routes,
+});
+// Redirection pour les routes nécessitant une authentification
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token');
+  if (to.meta.requiresAuth && !token) {
+    next('/login'); // Redirige vers la page de connexion si pas de token
+  } else {
+    next();
+  }
+});
 
-export default router
+export default router;

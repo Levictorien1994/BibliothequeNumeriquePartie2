@@ -119,9 +119,4 @@ export const loginUtilisateur = async (req, res) => {
     res.status(500).json({ error: 'Erreur lors de la connexion.' });
   }
 };
-const utilisateurs = await Utilisateur.findAll();
-for (const utilisateur of utilisateurs) {
-  const hashedPassword = await bcrypt.hash(utilisateur.mot_de_passe, 10);
-  utilisateur.mot_de_passe = hashedPassword;
-  await utilisateur.save();
-}
+
