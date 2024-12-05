@@ -25,7 +25,7 @@ app.use(cors());
 app.use(helmet());
 app.use(compression());
 app.use(bodyParser.json()); // Analyser les requêtes JSON
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(express.json()); // Middleware pour analyser les JSON
 // Configuration des middlewares

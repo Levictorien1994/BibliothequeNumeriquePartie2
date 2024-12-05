@@ -17,7 +17,7 @@ const router = express.Router();
 // Route pour récupérer un livre par ID
 router.get('/:id', authenticateToken, getLivreById);
 
-router.get('/', authenticateToken, getAllLivres); // Accessible à tous les utilisateurs connectés
+router.get('/',authenticateToken, getAllLivres); // Accessible à tous les utilisateurs connectés
 router.post('/', validateLivre,authenticateToken, authorizeRole(['Auteur', 'SuperAdmin', 'Administrateur']),  createLivre);
 router.put('/:id', validateLivre,authenticateToken, authorizeRole(['Administrateur', 'SuperAdmin', 'Auteur']),  updateLivre);
 router.delete('/:id',authenticateToken, authorizeRole(['Administrateur']),  deleteLivre);
