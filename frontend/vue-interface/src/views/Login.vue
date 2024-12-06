@@ -4,7 +4,7 @@
       <form @submit.prevent="login">
         <div>
           <label>Email :</label>
-          <input type="email" v-model="email" required />
+          <input type="email" v-model="email" />
         </div>
         <div>
           <label>Mot de passe :</label>
@@ -44,4 +44,14 @@
     },
   };
   </script>
+  <style> button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+</style>
   

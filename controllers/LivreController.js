@@ -1,12 +1,20 @@
 import Livre from '../models/Livre.js';
+import Auteur from '../models/Auteur.js';
 
 // Récupérer tous les livres
 export const getAllLivres = async (req, res) => {
   try {
-    const livres = await Livre.findAll();
+    const livres = await Livre.findAll({
+      include: [
+        {
+          model: Auteur,
+          attributes: ['nom', 'prenom', 'nationalite'], // Sélectionner les champs souhaités
+        },
+      ],
+    });
     res.status(200).json(livres);
   } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la récupération des livres' });
+    res.status(500).json({ error: 'Erreur lors de la récupération des livres.' });
   }
 };
 
