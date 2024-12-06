@@ -15,6 +15,10 @@ const Livre = sequelize.define('Livre', {
     type: DataTypes.TEXT,
     allowNull: true,
   },
+  image_url: { // Nouveau champ pour l'URL de l'image
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   categorie_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
