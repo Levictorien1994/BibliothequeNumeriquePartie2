@@ -22,4 +22,5 @@ router.post('/', validateLivre,authenticateToken, authorizeRole(['Auteur', 'Supe
 router.put('/:id', validateLivre,authenticateToken, authorizeRole(['Administrateur', 'SuperAdmin', 'Auteur']),  updateLivre);
 router.delete('/:id',authenticateToken, authorizeRole(['Administrateur']),  deleteLivre);
 
+
 export default router;

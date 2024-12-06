@@ -27,6 +27,10 @@ const Livre = sequelize.define('Livre', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  resume: {
+    type: DataTypes.STRING,
+    allowNull:true,
+  }
 });
 
 export default Livre;
