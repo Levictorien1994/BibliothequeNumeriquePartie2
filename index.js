@@ -52,7 +52,7 @@ app.listen(PORT, () => {
 });
 (async () => {
   try {
-    await sequelize.sync({ alter: true}); //  true` si vous voulez recréer les tables
+    await sequelize.sync({ alter: false}); //  true` si vous voulez recréer les tables
     console.log('Base de données synchronisée.');
   } catch (error) {
     console.error('Erreur de synchronisation de la base de données :', error);
