@@ -108,8 +108,8 @@ ul {
 }
 
 .livre-image {
-  width: 150px;
-  height: 200px;
+  width: 350px;
+  height: 250px;
   object-fit: cover;
   margin-right: 20px;
   border-radius: 4px;
