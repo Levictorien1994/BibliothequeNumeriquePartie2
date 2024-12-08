@@ -1,13 +1,4 @@
-// src/services/UtilisateurService.js
-
-import axios from "axios";
-
-const apiClient = axios.create({
-  baseURL: "http://localhost:3000/api", // Remplacez par l'URL de votre backend
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+import apiClient from "./api"; // Assurez-vous que `api.js` est correctement importé
 
 export default {
   // Récupérer tous les utilisateurs
