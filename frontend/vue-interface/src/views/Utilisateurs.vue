@@ -1,190 +1,169 @@
 <template>
-  <div class="utilisateurs-page">
-    <h1>Gestion des utilisateurs</h1>
+  <div>
+    <h1>Gestion des Utilisateurs</h1>
 
-    <!-- Barre de recherche -->
-    <div class="search-bar">
-      <input
-        v-model="searchName"
-        placeholder="Rechercher par nom"
-        @input="fetchUtilisateurs"
-      />
-      <select v-model="searchRole" @change="fetchUtilisateurs">
-        <option value="">Tous les rôles</option>
-        <option v-for="role in roles" :key="role.role_id" :value="role.role_id">
-          {{ role.nom }}
-        </option>
-      </select>
-    </div>
+    <!-- Formulaire de création ou de modification -->
+    <form @submit.prevent="handleSubmit">
+      <div>
+        <label for="nom">Nom :</label>
+        <input id="nom" v-model="form.nom" placeholder="Nom" required />
+      </div>
+      <div>
+        <label for="email">Email :</label>
+        <input id="email" v-model="form.email" type="email" placeholder="Email" required />
+      </div>
+      <div v-if="!isEdit">
+        <label for="mot_de_passe">Mot de passe :</label>
+        <input
+          id="mot_de_passe"
+          v-model="form.mot_de_passe"
+          type="password"
+          placeholder="Mot de passe"
+          required
+        />
+      </div>
+      <div>
+        <label for="role_id">Rôle :</label>
+        <select id="role_id" v-model="form.role_id" required>
+          <option value="1">Administrateur</option>
+          <option value="2">Auteur</option>
+          <option value="3">Lecteur</option>
+        </select>
+      </div>
+      <button type="submit">{{ isEdit ? "Modifier" : "Créer" }}</button>
+      <button type="button" @click="resetForm">Annuler</button>
+    </form>
 
     <!-- Liste des utilisateurs -->
-    <table>
-      <thead>
-        <tr>
-          <th>Photo</th>
-          <th>Nom</th>
-          <th>Email</th>
-          <th>Rôle</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="utilisateur in utilisateurs" :key="utilisateur.utilisateur_id">
-          <td>
-            <img
-              :src="utilisateur.photo || '/images/default-avatar.png'"
-              alt="Photo de l'utilisateur"
-              class="user-photo"
-            />
-          </td>
-          <td>{{ utilisateur.nom }}</td>
-          <td>{{ utilisateur.email }}</td>
-          <td>{{ utilisateur.Role.nom }}</td>
-          <td>
-            <button @click="supprimerUtilisateur(utilisateur.utilisateur_id)">Supprimer</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- Formulaire d'ajout -->
-    <div class="form-section">
-      <h2>Ajouter un utilisateur</h2>
-      <form @submit.prevent="enregistrerUtilisateur">
-        <input v-model="nouvelUtilisateur.nom" type="text" placeholder="Nom" required />
-        <input v-model="nouvelUtilisateur.email" type="email" placeholder="Email" required />
-        <input v-model="nouvelUtilisateur.mot_de_passe" type="password" placeholder="Mot de passe" required />
-        <select v-model="nouvelUtilisateur.role_id" required>
-          <option value="">Sélectionnez un rôle</option>
-          <option v-for="role in roles" :key="role.role_id" :value="role.role_id">
-            {{ role.nom }}
-          </option>
-        </select>
-        <input type="file" @change="handlePhotoUpload" />
-        <button type="submit">Enregistrer</button>
-      </form>
+    <div v-if="utilisateurs.length">
+      <h2>Liste des Utilisateurs</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Rôle</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="utilisateur in utilisateurs" :key="utilisateur.utilisateur_id">
+            <td>{{ utilisateur.nom }}</td>
+            <td>{{ utilisateur.email }}</td>
+            <td>{{ getRoleLabel(utilisateur.role_id) }}</td>
+            <td>
+              <button @click="editUtilisateur(utilisateur)">Modifier</button>
+              <button @click="deleteUtilisateur(utilisateur.utilisateur_id)">Supprimer</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
+
 <script>
-import apiClient from "../services/api";
+import axios from "axios";
 
 export default {
   data() {
     return {
       utilisateurs: [],
-      roles: [],
-      searchName: "",
-      searchRole: "",
-      nouvelUtilisateur: {
+      form: {
+        utilisateur_id: null,
         nom: "",
         email: "",
         mot_de_passe: "",
         role_id: "",
-        photo: null,
       },
+      isEdit: false,
     };
-  },
-  async created() {
-    await this.fetchRoles();
-    await this.fetchUtilisateurs();
   },
   methods: {
     async fetchUtilisateurs() {
       try {
-        const response = await apiClient.get("/utilisateurs", {
-          params: {
-            nom: this.searchName,
-            role: this.searchRole,
-          },
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await axios.get("/api/utilisateurs");
         this.utilisateurs = response.data;
       } catch (error) {
         console.error("Erreur lors de la récupération des utilisateurs :", error);
       }
     },
-    async fetchRoles() {
+    async handleSubmit() {
       try {
-        const response = await apiClient.get("/roles", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        this.roles = response.data;
+        if (this.isEdit) {
+          // Mise à jour
+          await axios.put(`/api/utilisateurs/${this.form.utilisateur_id}`, this.form);
+          alert("Utilisateur mis à jour avec succès !");
+        } else {
+          // Création
+          await axios.post("/api/utilisateurs", this.form);
+          alert("Utilisateur créé avec succès !");
+        }
+        this.resetForm();
+        this.fetchUtilisateurs();
       } catch (error) {
-        console.error("Erreur lors de la récupération des rôles :", error);
+        console.error("Erreur lors de l'envoi du formulaire :", error);
+        if (error.response && error.response.data.errors) {
+          alert(error.response.data.errors.map((e) => e.message).join("\n"));
+        }
       }
     },
-    handlePhotoUpload(event) {
-      const file = event.target.files[0];
-      this.nouvelUtilisateur.photo = file;
-    },
-    async enregistrerUtilisateur() {
-      const formData = new FormData();
-      formData.append("nom", this.nouvelUtilisateur.nom);
-      formData.append("email", this.nouvelUtilisateur.email);
-      formData.append("mot_de_passe", this.nouvelUtilisateur.mot_de_passe);
-      formData.append("role_id", this.nouvelUtilisateur.role_id);
-      if (this.nouvelUtilisateur.photo) {
-        formData.append("photo", this.nouvelUtilisateur.photo);
-      }
-
+    async deleteUtilisateur(id) {
+      if (!confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) return;
       try {
-        await apiClient.post("/utilisateurs", formData, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        alert("Utilisateur ajouté avec succès.");
-        await this.fetchUtilisateurs();
-      } catch (error) {
-        console.error("Erreur lors de l'ajout de l'utilisateur :", error);
-      }
-    },
-    async supprimerUtilisateur(utilisateurId) {
-      try {
-        await apiClient.delete(`/utilisateurs/${utilisateurId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        this.utilisateurs = this.utilisateurs.filter(
-          (u) => u.utilisateur_id !== utilisateurId
-        );
-        alert("Utilisateur supprimé.");
+        await axios.delete(`/api/utilisateurs/${id}`);
+        alert("Utilisateur supprimé avec succès !");
+        this.fetchUtilisateurs();
       } catch (error) {
         console.error("Erreur lors de la suppression de l'utilisateur :", error);
       }
     },
+    editUtilisateur(utilisateur) {
+      this.isEdit = true;
+      this.form = { ...utilisateur };
+    },
+    resetForm() {
+      this.isEdit = false;
+      this.form = {
+        utilisateur_id: null,
+        nom: "",
+        email: "",
+        mot_de_passe: "",
+        role_id: "",
+      };
+    },
+    getRoleLabel(role_id) {
+      const roles = {
+        1: "Administrateur",
+        2: "Auteur",
+        3: "Lecteur",
+      };
+      return roles[role_id] || "Inconnu";
+    },
+  },
+  mounted() {
+    this.fetchUtilisateurs();
   },
 };
 </script>
-.utilisateurs-page {
-  padding: 20px;
-}
 
-.search-bar {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.user-photo {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-}
-
-form input,
-form select,
-form button {
-  display: block;
-  margin-bottom: 10px;
-  padding: 10px;
+<style scoped>
+/* Ajoutez vos styles ici */
+table {
   width: 100%;
-  max-width: 300px;
+  border-collapse: collapse;
 }
+
+th, td {
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #f4f4f4;
+}
+
+button {
+  margin-right: 5px;
+}
+</style>
