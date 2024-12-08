@@ -64,6 +64,7 @@
 
 <script>
 import axios from "axios";
+import utilisateurService from "../services/utilisateurService";
 
 export default {
   data() {
@@ -81,43 +82,45 @@ export default {
   },
   methods: {
     async fetchUtilisateurs() {
-      try {
-        const response = await axios.get("/api/utilisateurs");
-        this.utilisateurs = response.data;
-      } catch (error) {
-        console.error("Erreur lors de la récupération des utilisateurs :", error);
-      }
-    },
-    async handleSubmit() {
-      try {
-        if (this.isEdit) {
-          // Mise à jour
-          await axios.put(`/api/utilisateurs/${this.form.utilisateur_id}`, this.form);
-          alert("Utilisateur mis à jour avec succès !");
-        } else {
-          // Création
-          await axios.post("/api/utilisateurs", this.form);
-          alert("Utilisateur créé avec succès !");
-        }
-        this.resetForm();
-        this.fetchUtilisateurs();
-      } catch (error) {
-        console.error("Erreur lors de l'envoi du formulaire :", error);
-        if (error.response && error.response.data.errors) {
-          alert(error.response.data.errors.map((e) => e.message).join("\n"));
-        }
-      }
-    },
-    async deleteUtilisateur(id) {
-      if (!confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) return;
-      try {
-        await axios.delete(`/api/utilisateurs/${id}`);
-        alert("Utilisateur supprimé avec succès !");
-        this.fetchUtilisateurs();
-      } catch (error) {
-        console.error("Erreur lors de la suppression de l'utilisateur :", error);
-      }
-    },
+    try {
+      const response = await utilisateurService.getAllUtilisateurs();
+      this.utilisateurs = response.data;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des utilisateurs :", error);
+    }
+  },
+  async handleSubmit() {
+  const formData = new FormData();
+  Object.keys(this.form).forEach((key) => {
+    formData.append(key, this.form[key]);
+  });
+
+  try {
+    if (this.isEdit) {
+      await utilisateurService.updateUtilisateur(this.form.utilisateur_id, formData);
+      alert("Utilisateur modifié avec succès !");
+    } else {
+      await utilisateurService.createUtilisateur(formData);
+      alert("Utilisateur créé avec succès !");
+    }
+    this.resetForm();
+    this.fetchUtilisateurs();
+  } catch (error) {
+    console.error("Erreur lors de l'envoi :", error);
+  }
+},
+async deleteUtilisateur(id) {
+  if (confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) {
+    try {
+      await utilisateurService.deleteUtilisateur(id);
+      this.fetchUtilisateurs();
+    } catch (error) {
+      console.error("Erreur lors de la suppression :", error);
+    }
+  }
+},
+
+   
     editUtilisateur(utilisateur) {
       this.isEdit = true;
       this.form = { ...utilisateur };
