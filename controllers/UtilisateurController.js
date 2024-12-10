@@ -1,6 +1,7 @@
 import Utilisateur from '../models/Utilisateur.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import path from 'path'
 
 // Obtenir tous les utilisateurs
 export const getAllUtilisateurs = async (req, res) => {
@@ -30,30 +31,19 @@ export const getUtilisateurById = async (req, res) => {
 
 export const createUtilisateur = async (req, res) => {
   const { nom, email, mot_de_passe, role_id } = req.body;
+  const imagePath = req.file ? `/image/${req.file.filename}` : null; // Chemin de l'image
 
   try {
-    const hashedPassword = await bcrypt.hash(mot_de_passe, 10);
-
     const utilisateur = await Utilisateur.create({
       nom,
       email,
-      mot_de_passe: hashedPassword,
+      mot_de_passe,
       role_id,
+      image: imagePath, // Enregistrer le chemin de l'image
     });
 
-    res.status(201).json({
-      message: 'Utilisateur créé avec succès.',
-      utilisateur,
-    });
+    res.status(201).json({ message: 'Utilisateur créé avec succès.', utilisateur });
   } catch (error) {
-    if (error.name === 'SequelizeValidationError') {
-      const validationErrors = error.errors.map((err) => ({
-        message: err.message,
-        field: err.path,
-      }));
-      return res.status(400).json({ errors: validationErrors });
-    }
-
     res.status(500).json({ error: 'Erreur lors de la création de l’utilisateur.' });
   }
 };
@@ -120,3 +110,6 @@ export const loginUtilisateur = async (req, res) => {
   }
 };
 
+export const utilisateurs = await Utilisateur.findAll({
+  attributes: ['utilisateur_id', 'nom', 'email', 'role_id', 'image'],
+});
