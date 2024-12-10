@@ -33,9 +33,6 @@ Reservation.belongsTo(Utilisateur, { foreignKey: 'utilisateur_id' });
 Livre.hasMany(Reservation, { foreignKey: 'livre_id' });
 Reservation.belongsTo(Livre, { foreignKey: 'livre_id' });
 
-Livre.hasMany(Avis, { foreignKey: 'livre_id' });
-Avis.belongsTo(Livre, { foreignKey: 'livre_id' });
-
 Utilisateur.hasMany(Avis, { foreignKey: 'utilisateur_id' });
 Avis.belongsTo(Utilisateur, { foreignKey: 'utilisateur_id' });
 

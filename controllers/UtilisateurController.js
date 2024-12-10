@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import path from 'path'
 
+
 // Obtenir tous les utilisateurs
 export const getAllUtilisateurs = async (req, res) => {
   try {

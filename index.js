@@ -9,7 +9,7 @@ import empruntRoutes from './routes/EmpruntRoutes.js';
 import utilisateurRoutes from './routes/UtilisateurRoutes.js';
 import roleRoutes from './routes/RoleRoutes.js';
 import livreRoutes from './routes/livreRoutes.js';
-import avisRoutes from './routes/AvisRoutes.js';
+import avisRoutes from "./routes/AvisRoutes.js";
 import categorieRoutes  from './routes/CategorieRoutes.js';
 import testRoutes from './routes/TestRoutes.js';
 import cors from 'cors';
@@ -17,6 +17,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 import bodyParser from 'body-parser';
 import { fileURLToPath } from 'url';
+import Avis from './models/Avis.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

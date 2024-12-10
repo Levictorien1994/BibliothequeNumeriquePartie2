@@ -1,20 +1,13 @@
+// routes/avisRoutes.js
 import express from 'express';
-import { authenticateToken, authorizeRole } from '../middlewares/authMiddleware.js';
-import { validateAvis } from '../middlewares/validationMiddleware.js';
-import {
-  getAllAvis,
-  getAvisById,
-  createAvis,
-  updateAvis,
-  deleteAvis,
-} from '../controllers/AvisController.js';
+import { getAllAvis, createAvis } from '../controllers/AvisController.js';
 
 const router = express.Router();
 
-router.get('/', authenticateToken, getAllAvis);
-router.get('/:id', authenticateToken, getAvisById);
-router.post('/', validateAvis, authenticateToken, createAvis);
-router.put('/:id', validateAvis, authenticateToken, updateAvis);
-router.delete('/:id', validateAvis, authenticateToken, authorizeRole(['SuperAdmin', 'Administrateur']), deleteAvis);
+// Route pour obtenir tous les avis
+router.get('/', getAllAvis);
+
+// Route pour ajouter un avis
+router.post('/', createAvis);
 
 export default router;

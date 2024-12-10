@@ -57,6 +57,7 @@
         
       </div>
     </div>
+         <button @click="$router.push('/avis')"  class="btn">Voir les Avis</button>
   </div>
 </template>
 
