@@ -24,15 +24,26 @@ export const getPaiementById = async (req, res) => {
 };
 
 // Créer un paiement
-export const createPaiement = async (req, res) => {
+export const effectuerPaiement = async (req, res) => {
+  const { montant, livre_id } = req.body;
+  const utilisateur_id = req.user.id;
+
   try {
-    const paiement = await Paiement.create(req.body);
-    res.status(201).json(paiement);
+    const paiement = await Paiement.create({
+      utilisateur_id,
+      montant,
+      date_paiement: new Date(),
+    });
+
+    res.status(201).json({
+      message: "Paiement effectué avec succès.",
+      paiement,
+    });
   } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la création du paiement' });
+    console.error("Erreur lors du paiement :", error);
+    res.status(500).json({ error: "Erreur lors du paiement." });
   }
 };
-
 // Mettre à jour un paiement
 export const updatePaiement = async (req, res) => {
   try {

@@ -3,18 +3,22 @@ import Livres from '../views/Livres.vue';
 import Login from '../views/Login.vue';
 import Utilisateurs from '../views/Utilisateurs.vue'
 import Accueil from '../views/Home.vue'; 
+import Auteurs from '@/views/Auteurs.vue';
+import Categories from '../views/Categories.vue';
+import Paiement from '../components/icons/Paiement.vue';
+
+
 const routes = [
   { path: '/livres', component: Livres, meta: { requiresAuth: true } },
-  { path: '/login', name: 'Login', component: Login },
-  {path: '/',
-    name: 'Accueil',
-    component: Accueil,
-},
-{
-  path: '/utilisateurs',
-  name: 'Utilisateurs',
-  component: Utilisateurs,
-}
+  { path: '/', name: 'Login', component: Login },
+  {path: '/accueil',name: 'Accueil',component: Accueil,},
+  { path: '/utilisateurs', name: 'Utilisateurs',component: Utilisateurs,},
+ {path: '/auteurs',name:'Auteurs', component:Auteurs},
+ {path: '/categories',name:'Categories',component:Categories},
+ { path: '/paiement',name: 'Paiement',component: Paiement, },
+
+ 
+ 
 ];
 
 const router = createRouter({

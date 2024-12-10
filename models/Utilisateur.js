@@ -24,6 +24,10 @@ const Utilisateur = sequelize.define('Utilisateur', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  image:{  type: DataTypes.STRING,
+    allowNull: true,
+
+  }
 });
 
 export default Utilisateur;

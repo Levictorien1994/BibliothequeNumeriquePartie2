@@ -66,7 +66,7 @@ export default {
     toggleResume(livre) {
       livre.showResume = !livre.showResume;
     },
-
+ 
     async emprunterLivre(livre) {
   this.loading = true;
   try {
@@ -75,26 +75,33 @@ export default {
       await apiClient.post(`/emprunts`, { livre_id: livre.livre_id }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
-      livre.empruntUtilisateur = true; // Mettre à jour l'état localement
+      livre.empruntUtilisateur = true; // Met à jour l'état localement
       alert(`Vous avez emprunté le livre "${livre.titre}".`);
+
+      // Rediriger vers la page de paiement
+      this.$router.push({
+        name: 'Paiement',
+        query: { livre_id: livre.livre_id, titre: livre.titre },
+      });
     } else {
       // Rendre le livre
       await apiClient.post(`/emprunts/${livre.livre_id}/retourner`, {}, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
-      livre.empruntUtilisateur = false; // Mettre à jour l'état localement
+      livre.empruntUtilisateur = false; // Met à jour l'état localement
       alert(`Vous avez rendu le livre "${livre.titre}".`);
     }
   } catch (error) {
-    console.error('Erreur lors de l\'action :', error);
+    console.error("Erreur :", error);
     alert(error.response?.data?.error || "Erreur lors de l'action.");
   } finally {
     this.loading = false;
   }
 },
+
  logout() {
       localStorage.removeItem('token');
-      this.$router.push('/login');
+      this.$router.push('/');
     },
   },
 };

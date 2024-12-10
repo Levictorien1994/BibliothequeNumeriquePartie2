@@ -1,5 +1,5 @@
 import express from 'express';
-
+import path from 'path';
 import './models/relation.js';
 import sequelize from './config/database.js';
 import auteurRoutes from './routes/AuteurRoutes.js';
@@ -16,6 +16,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import bodyParser from 'body-parser';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 
@@ -29,7 +32,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(express.json()); // Middleware pour analyser les JSON
 // Configuration des middlewares
-
+// Configuration du dossier public
+app.use('/image', express.static(path.join(__dirname, 'public/image')))
 
 
 
