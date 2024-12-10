@@ -11,10 +11,6 @@ const Avis = sequelize.define('Avis', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  livre_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
   note: {
     type: DataTypes.INTEGER,
     allowNull: false,

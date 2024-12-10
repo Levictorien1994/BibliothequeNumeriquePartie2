@@ -6,6 +6,7 @@ import Accueil from '../views/Home.vue';
 import Auteurs from '@/views/Auteurs.vue';
 import Categories from '../views/Categories.vue';
 import Paiement from '../components/icons/Paiement.vue';
+import Avis from '../views/Avis.vue';
 
 
 const routes = [
@@ -16,6 +17,7 @@ const routes = [
  {path: '/auteurs',name:'Auteurs', component:Auteurs},
  {path: '/categories',name:'Categories',component:Categories},
  { path: '/paiement',name: 'Paiement',component: Paiement, },
+ { path: '/avis', name: 'Avis',component: Avis,},
 
  
  

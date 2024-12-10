@@ -1,62 +1,40 @@
-import Avis from '../models/Avis.js';
 
-// Récupérer tous les avis
+
+// Obtenir tous les avis
+import Avis from '../models/Avis.js';
+import Utilisateur from '../models/Utilisateur.js';
+
 export const getAllAvis = async (req, res) => {
   try {
-    const avis = await Avis.findAll();
+    const avis = await Avis.findAll({
+      include: {
+        model: Utilisateur,
+        attributes: ['nom'], // Récupère uniquement le nom
+      },
+    });
     res.status(200).json(avis);
   } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la récupération des avis' });
+    console.error('Erreur lors de la récupération des avis:', error);
+    res.status(500).json({ error: 'Erreur lors de la récupération des avis.' });
   }
 };
 
-// Récupérer un avis par ID
-export const getAvisById = async (req, res) => {
-  try {
-    const avis = await Avis.findByPk(req.params.id);
-    if (!avis) {
-      return res.status(404).json({ error: 'Avis non trouvé' });
-    }
-    res.status(200).json(avis);
-  } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la récupération de l\'avis' });
-  }
-};
 
-// Créer un avis
+// Ajouter un avis
+
+
 export const createAvis = async (req, res) => {
+  const { utilisateur_id, note, commentaire } = req.body;
+
   try {
-    const avis = await Avis.create(req.body);
+    if (!utilisateur_id) {
+      return res.status(400).json({ error: "L'ID de l'utilisateur est requis." });
+    }
+
+    const avis = await Avis.create({ utilisateur_id, note, commentaire });
     res.status(201).json(avis);
   } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la création de l\'avis' });
-  }
-};
-
-// Mettre à jour un avis
-export const updateAvis = async (req, res) => {
-  try {
-    const avis = await Avis.findByPk(req.params.id);
-    if (!avis) {
-      return res.status(404).json({ error: 'Avis non trouvé' });
-    }
-    await avis.update(req.body);
-    res.status(200).json(avis);
-  } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la mise à jour de l\'avis' });
-  }
-};
-
-// Supprimer un avis
-export const deleteAvis = async (req, res) => {
-  try {
-    const avis = await Avis.findByPk(req.params.id);
-    if (!avis) {
-      return res.status(404).json({ error: 'Avis non trouvé' });
-    }
-    await avis.destroy();
-    res.status(200).json({ message: 'Avis supprimé avec succès' });
-  } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la suppression de l\'avis' });
+    console.error('Erreur lors de la création de l\'avis :', error);
+    res.status(500).json({ error: 'Erreur lors de la création de l\'avis.' });
   }
 };
